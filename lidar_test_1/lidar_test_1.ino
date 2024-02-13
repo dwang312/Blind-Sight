@@ -5,7 +5,7 @@
 TFLI2C tflI2C;
 
 int16_t  tfDist;    // distance in centimeters
-int16_t  tfAddr = TFL_DEF_ADR;  // Use this default I2C address
+int16_t  tfAddr = 0x12;  // Use this default I2C address
 
 void setup(){
     Serial.begin(115200);  // Initalize serial port
@@ -17,5 +17,5 @@ void loop(){
     if(tflI2C.getData(tfDist, tfAddr)){
         Serial.println(String(tfDist)+" cm / " + String(tfDist/2.54)+" inches");
     }
-    delay(5000);
+    delay(1000);
 }

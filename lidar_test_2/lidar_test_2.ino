@@ -1,15 +1,15 @@
 #include <Wire.h>
 
-#define SLAVE_ADDRESS_1 0x10 // I2C address for the first sensor
-#define SLAVE_ADDRESS_2 0x10 // I2C address for the second sensor (modify if different)
+#define SLAVE_ADDRESS_1 0x11 // I2C address for the first sensor
+#define SLAVE_ADDRESS_2 0x12 // I2C address for the second sensor (modify if different)
 #define COMMAND 0x00         // Command
 #define DATA_LENGTH 9        // Data length
 
-#define SDA_1 21 // Green SDA for the first sensor
-#define SCL_1 22 // White SCL for the first sensor
+#define SDA_1 19 // Green SDA for the first sensor
+#define SCL_1 20 // White SCL for the first sensor
 
-#define SDA_2 19 // Green SDA for the second sensor
-#define SCL_2 20 // White SCL for the second sensor
+#define SDA_2 21 // Green SDA for the second sensor
+#define SCL_2 22 // White SCL for the second sensor
 
 unsigned char buf1[] = {0x5A, 0x05, 0x00, 0x01, 0x60};
 unsigned char buf2[] = {0x5A, 0x05, 0x00, 0x01, 0x60}; // Replace with the command for the second sensor
