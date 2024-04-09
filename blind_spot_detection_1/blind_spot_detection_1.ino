@@ -6,26 +6,29 @@ TFLI2C tflI2C;
 
 int16_t Dist1;    // distance in centimeters
 int16_t Dist2;    // distance in centimeters
+int16_t Dist3;    // distance in centimeters
 
+bool warning1, warning2, warning3;
 
-uint8_t  lidar1 = 0x11;  // address of lidar 1
-uint8_t  lidar2 = 0x12;  // address of lidar 2 
-
+uint8_t  MiddleLidar = 0x10;  // address of lidar 1 middle
+uint8_t  LeftLidar = 0x11;  // address of lidar 2 left
+uint8_t  RightLidar = 0x12;  // address of lidar 3 right
 
 const int ledPin1 = 6; // Pin for the first LED
 const int ledPin2 = 7; // Pin for the second LED
 
 // Function to get LIDAR distances
 void getDistance() {
-    tflI2C.getData(Dist1, lidar1);
-    tflI2C.getData(Dist2, lidar2);
+    tflI2C.getData(Dist1, LeftLidar);
+    tflI2C.getData(Dist2, RightLidar);
+    tflI2C.getData(Dist3, MiddleLidar);
 }
 
-// Function to calculate warnings
-std::pair<bool, bool> calculateWarning(int16_t dist1, int16_t dist2) {
-    bool warning1 = dist1 < 150; // Example threshold, adjust as needed
-    bool warning2 = dist2 < 150; // Example threshold, adjust as needed
-    return std::make_pair(warning1, warning2);
+// Function to calculate warnings based on distances
+void calculateWarning(int16_t dist1, int16_t dist2, int16_t dist3, bool& warning1, bool& warning2, bool& warning3) {
+    warning1 = dist1 < 50; // Example threshold, adjust as needed
+    warning2 = dist2 < 50; // Example threshold, adjust as needed
+    warning3 = dist3 < 50; // Example threshold, adjust as needed
 }
 
 // Function to send Bluetooth warning
@@ -34,17 +37,24 @@ void bluetoothWarning(bool warning1, bool warning2) {
 }
 
 // Function to trigger LED warning
-void ledWarning(bool warning1, bool warning2) {
+void ledWarning(bool warning1, bool warning2, bool warning3) {
     digitalWrite(ledPin1, warning1 ? HIGH : LOW); // Turn on/off first LED based on warning1
     digitalWrite(ledPin2, warning2 ? HIGH : LOW); // Turn on/off second LED based on warning2
+    if (warning3) {
+        digitalWrite(ledPin1, HIGH); // Turn on first LED
+        digitalWrite(ledPin2, HIGH); // Turn on second LED
+    }
 }
+
 
 // Function to print distances to Serial Monitor
 void printDistances() {
-    Serial.print("Distance 1: ");
+    Serial.print("Left Distance: ");
     Serial.print(Dist1);
-    Serial.print(" cm, Distance 2: ");
+    Serial.print(" cm, Right Distance: ");
     Serial.print(Dist2);
+    Serial.print(" cm Middle Distance: ");
+    Serial.print(Dist3);
     Serial.println(" cm");
 }
 
@@ -58,8 +68,8 @@ void setup() {
 void loop() {
     getDistance();
     printDistances(); // Print distances to Serial Monitor
-    std::pair<bool, bool> warnings = calculateWarning(Dist1, Dist2);
+    calculateWarning(Dist1, Dist2, Dist3, warning1, warning2, warning3); // Calculate warnings
+    ledWarning(warning1, warning2, warning3); // Call LED warning function
     //bluetoothWarning(warnings.first, warnings.second);
-    ledWarning(warnings.first, warnings.second);
-    delay(10);
+    delay(100);
 }
