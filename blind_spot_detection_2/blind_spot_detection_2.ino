@@ -54,29 +54,17 @@ void setColorRight(int R, int G, int B) {
 // Function to trigger LED warning
 void ledWarning(bool leftWarning, bool rightWarning, bool middleWarning,
                 bool leftWarning2, bool rightWarning2, bool middleWarning2) {
-
-  if (middleWarning) {
+  if (leftWarning || middleWarning) {
     setColorLeft(255, 0, 0);
-    setColorRight(255, 0, 0);
-  } else if (middleWarning2) {
-    setColorLeft(255, 255, 0);
-    setColorRight(255, 255, 0);
-  } else {
-    setColorLeft(0, 0, 0);
-    setColorRight(0, 0, 0);
-  }
-
-  if (leftWarning) {
-    setColorLeft(255, 0, 0);
-  } else if (leftWarning2) {
+  } else if (leftWarning2 || middleWarning2) {
     setColorLeft(255, 255, 0);
   } else {
     setColorLeft(0, 0, 0);
   }
 
-  if (rightWarning) {
+  if (rightWarning || middleWarning) {
     setColorRight(255, 0, 0);
-  } else if (rightWarning2) {
+  } else if (rightWarning2 || middleWarning2) {
     setColorRight(255, 255, 0);
   } else {
     setColorRight(0, 0, 0);
