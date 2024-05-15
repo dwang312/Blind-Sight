@@ -8,8 +8,8 @@ int16_t Dist1;  // distance in centimeters
 int16_t Dist2;  // distance in centimeters
 int16_t Dist3;  // distance in centimeters
 
-bool leftWarning, rightWarning, middleWarning;
-bool leftWarning2, rightWarning2, middleWarning2;
+bool leftAZ, rightAZ, middleAZ;  // alert zone less then 4 meters
+bool leftWZ, rightWZ, middleWZ;  // warning zone 4 to 8 meters
 
 uint8_t LeftLidar = 0x10;    // address of lidar 1 left
 uint8_t MiddleLidar = 0x11;  // address of lidar 2 middle
@@ -30,15 +30,15 @@ void getDistance() {
 }
 
 // Function to calculate warnings based on distances
-void calculateWarning(int16_t dist1, int16_t dist2, int16_t dist3, bool& leftWarning, bool& rightWarning, bool& middleWarning,
-                      bool& leftWarning2, bool& rightWarning2, bool& middleWarning2) {
-  leftWarning = dist1 >= 10 && dist1 < 400;    // Example threshold, adjust as needed
-  rightWarning = dist2 >= 10 && dist2 < 400;   // Example threshold, adjust as needed
-  middleWarning = dist3 >= 10 && dist3 < 400;  // Example threshold, adjust as needed
+void calculateWarning(int16_t dist1, int16_t dist2, int16_t dist3, bool& leftAZ, bool& rightAZ, bool& middleAZ,
+                      bool& leftWZ, bool& rightWZ, bool& middleWZ) {
+  leftAZ = dist1 >= 10 && dist1 < 400;    // Example threshold, adjust as needed
+  rightAZ = dist2 >= 10 && dist2 < 400;   // Example threshold, adjust as needed
+  middleAZ = dist3 >= 10 && dist3 < 400;  // Example threshold, adjust as needed
 
-  leftWarning2 = dist1 >= 400 && dist1 <= 800;
-  rightWarning2 = dist2 >= 400 && dist2 <= 800;
-  middleWarning2 = dist3 >= 400 && dist3 <= 800;
+  leftWZ = dist1 >= 400 && dist1 <= 800;
+  rightWZ = dist2 >= 400 && dist2 <= 800;
+  middleWZ = dist3 >= 400 && dist3 <= 800;
 }
 
 void setColorLeft(int R, int G, int B) {
@@ -52,21 +52,20 @@ void setColorRight(int R, int G, int B) {
   analogWrite(gR, G);
   analogWrite(bR, B);
 }
-
 // Function to trigger LED warning
-void ledWarning(bool leftWarning, bool rightWarning, bool middleWarning,
-                bool leftWarning2, bool rightWarning2, bool middleWarning2) {
-  if (middleWarning || leftWarning) {
+void ledWarning(bool leftAZ, bool rightAZ, bool middleAZ,
+                bool leftWZ, bool rightWZ, bool middleWZ) {
+  if (middleAZ || leftAZ) {
     setColorLeft(255, 0, 0);  // Red for close objects
-  } else if (middleWarning2 || leftWarning2) {
+  } else if (middleWZ || leftWZ) {
     setColorLeft(255, 255, 0);  // Yellow for intermediate range
   } else {
     setColorLeft(0, 0, 0);  // Turn off LEDs
   }
 
-  if (middleWarning || rightWarning) {
+  if (middleAZ || rightAZ) {
     setColorRight(255, 0, 0);  // Red for close objects
-  } else if (middleWarning2 || rightWarning2) {
+  } else if (middleWZ || rightWZ) {
     setColorRight(255, 255, 0);  // Yellow for intermediate range
   } else {
     setColorRight(0, 0, 0);  // Turn off LEDs
@@ -96,8 +95,8 @@ void setup() {
 }
 
 void loop() {
-  getDistance();                                                                                                              // Get LIDAR data
+  getDistance();  // Get LIDAR data
   // printDistances();                                                                                                         // Print distances to Serial Monitor (commented out for this example)
-  calculateWarning(Dist1, Dist2, Dist3, leftWarning, rightWarning, middleWarning, leftWarning2, rightWarning2, middleWarning2);  // Calculate warnings
-  ledWarning(leftWarning, rightWarning, middleWarning, leftWarning2, rightWarning2, middleWarning2);                             // Call LED warning function
+  calculateWarning(Dist1, Dist2, Dist3, leftAZ, rightAZ, middleAZ, leftWZ, rightWZ, middleWZ);  // Calculate warnings
+  ledWarning(leftAZ, rightAZ, middleAZ, leftWZ, rightWZ, middleWZ);                             // Call LED warning function
 }
