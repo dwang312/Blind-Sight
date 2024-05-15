@@ -1,5 +1,4 @@
 #include <Arduino.h>
-#include <Wire.h>
 #include <TFLI2C.h>
 
 TFLI2C tflI2C;
@@ -85,7 +84,6 @@ void printDistances() {
 
 void setup() {
   Serial.begin(115200);  // Initialize serial port
-  Wire.begin();          // Initialize Wire library
   pinMode(rL, OUTPUT);
   pinMode(gL, OUTPUT);
   pinMode(bL, OUTPUT);

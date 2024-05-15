@@ -1,5 +1,4 @@
 #include <Arduino.h>
-#include <Wire.h>        // Instantiate the Wire library
 #include <TFLI2C.h>      // TFLuna-I2C Library v.0.1.1
 
 TFLI2C tflI2C;
@@ -50,7 +49,6 @@ void printDistances() {
 
 void setup() {
     Serial.begin(115200);  // Initialize serial port
-    Wire.begin();           // Initialize Wire library
     pinMode(ledPin1, OUTPUT); // Set the LED pin as an output
     pinMode(ledPin2, OUTPUT); // Set the LED pin as an output
 }
